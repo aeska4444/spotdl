@@ -1,15 +1,11 @@
 [tool.poetry]
-name = "spotdl"
-version = "4.0.7"
+name = "spotdl_romanized_lyrics"
+version = "0.0.6"
 description = "Download your Spotify playlists and songs along with album art and metadata"
 license = "MIT"
-authors = ["spotDL Team <spotdladmins@googlegroups.com>"]
-maintainers = ["xnetcat <xnetcat.dev@gmail.com>"]
+authors = ["aeska4444"]
 readme = "README.md"
-repository = "https://github.com/spotDL/spotify-downloader.git"
-homepage = "https://github.com/spotDL/spotify-downloader/"
-documentation = "https://spotdl.rtfd.io/en/latest/"
-keywords = ["spotify", "downloader", "spotdl", "music"]
+repository = "https://github.com/aeska4444/spotify-downloader.git"
 classifiers = [
     "Intended Audience :: End Users/Desktop",
     "License :: OSI Approved :: MIT License",
@@ -33,6 +29,7 @@ ytmusicapi = [
     {version = "^0.22.0", python = "<3.8"},
     {version = "^0.24.0", python = ">=3.8"},
 ]
+googletrans = "=3.1.0a0"
 pytube = "^12.1.2"
 yt-dlp = "^2023.1.6"
 mutagen = "^1.46.0"
@@ -77,7 +74,7 @@ mkdocs-literate-nav = "^0.6.0"
 mkdocs-section-index = "^0.3.4"
 
 [tool.poetry.scripts]
-spotdl = "spotdl:console_entry_point"
+spotdl_romanized_lyrics = "spotdl_romanized_lyrics:console_entry_point"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
