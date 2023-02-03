@@ -42,21 +42,21 @@ class Spotdl:
         user_auth: bool = False,
         cache_path: Optional[str] = None,
         no_cache: bool = False,
-        headless: bool = False,
+        headless: bool = True,
         audio_providers: Optional[List[str]] = None,
         lyrics_providers: Optional[List[str]] = None,
         ffmpeg: str = "ffmpeg",
         bitrate: Optional[str] = None,
         ffmpeg_args: Optional[str] = None,
         output_format: str = "mp3",
-        threads: int = 4,
+        threads: int = 10,
         output: str = ".",
         save_file: Optional[str] = None,
         overwrite: str = "skip",
         cookie_file: Optional[str] = None,
         filter_results: bool = True,
         search_query: Optional[str] = None,
-        log_level: str = "INFO",
+        log_level: str = "FATAL",
         simple_tui: bool = False,
         loop: Optional[asyncio.AbstractEventLoop] = None,
         restrict: bool = False,
@@ -103,7 +103,7 @@ class Spotdl:
             audio_providers = ["youtube-music"]
 
         if lyrics_providers is None:
-            lyrics_providers = ["musixmatch"]
+            lyrics_providers = ["genius"]
 
         # Initialize spotify client
         SpotifyClient.init(
