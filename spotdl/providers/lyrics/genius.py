@@ -53,6 +53,7 @@ class Genius(LyricsProvider):
             )
 
             song_url = song_response.json()["response"]["song"]["url"]
+            song_url = 'https://genius.com/Genius-romanizations-' + song_url.split('.com/')[1][:-7].lower() + '-romanized-lyrics'
 
             counter = 0
             soup = None
