@@ -50,8 +50,8 @@ class Animesonglyrics(TranslateProvider):
             translit, flag = (romaji.get_text('\n'), True,) if romaji else (None, False,)
 
             eng = englishlyrics.get_text('\n')
-            text = translit + '\n' + eng
-            return text.strip(), flag,
+            text = '\n'.join(filter(str.strip, translit + '\n' + eng))
+            return text, flag,
 
         except Exception:
             return None, None

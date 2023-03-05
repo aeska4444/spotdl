@@ -52,8 +52,8 @@ class Lyricstranslate(TranslateProvider):
             else:
                 translit, flag = None, True
 
-            text = translit + '\n' + eng
-            return text.strip(), flag
+            text = '\n'.join(filter(str.strip, translit + '\n' + eng))
+            return text, flag
         except Exception:
             return None, None
 

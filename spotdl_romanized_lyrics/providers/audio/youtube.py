@@ -49,7 +49,7 @@ class YouTube(AudioProvider):
 
                     # print(f"No results for ISRC: {song.isrc}")
 
-            search_query = create_song_title(song.name, song.artists).lower()
+            search_query = create_song_title(song.search_name, song.artists).lower()
 
         # Query YTM by songs only first, this way if we get correct result on the first try
         # we don't have to make another request to ytmusic api that could result in us
@@ -141,11 +141,11 @@ class YouTube(AudioProvider):
         links_with_match_value: Dict[str, Tuple[float, int]] = {}
 
         # Slugify song title
-        slug_song_name = slugify(song.name)
+        slug_song_name = slugify(song.search_name)
         slug_song_main_artist = slugify(song.artist)
         slug_song_artists = slugify(", ".join(song.artists))
         slug_song_title = slugify(
-            create_song_title(song.name, song.artists)
+            create_song_title(song.search_name, song.artists)
             if not self.search_query
             else create_search_query(song, self.search_query, False, None, True)
         )

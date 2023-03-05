@@ -21,6 +21,7 @@ class Song:
     """
     Song class. Contains all the information about a song.
     """
+    search_name: str
 
     name: str
     artists: List[str]
@@ -81,18 +82,17 @@ class Song:
         album_id = raw_track_meta["album"]["id"]
         raw_album_meta: Dict[str, Any] = spotify_client.album(album_id)  # type: ignore
 
-        name = raw_track_meta["name"]
         translator = googletrans.Translator()
-        l = translator.detect(raw_track_meta["name"])
+        search_name = raw_track_meta["name"]
 
-        if l.lang in ('ja', 'ko',):
-            name = translator.translate(raw_track_meta["name"]).text
-
-
+        if translator.detect(search_name).lang in ('ja', 'ko',):
+            search_name = translator.translate(raw_track_meta["name"]).text
 
         # create song object
         return cls(
-            name=name,
+            search_name=search_name,
+
+            name=raw_track_meta["name"],
             artists=[artist["name"] for artist in raw_track_meta["artists"]],
             artist=raw_track_meta["artists"][0]["name"],
             album_name=raw_album_meta["name"],
@@ -225,7 +225,7 @@ class Song:
                     list_class
                     for list_class in SongList.__subclasses__()
                     if list(list_class.__dataclass_fields__.keys())
-                    == list(data["song_list"].keys())
+                       == list(data["song_list"].keys())
                 )
             )
 

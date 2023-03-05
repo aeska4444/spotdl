@@ -133,8 +133,7 @@ class Downloader:
         """
 
         if audio_providers is None:
-            audio_providers = ["youtube-music",
-                               "youtube"]
+            audio_providers = ["youtube-music"]
 
         if lyrics_providers is None:
             lyrics_providers = ["genius"]
@@ -142,7 +141,7 @@ class Downloader:
         if translate_providers is None:
             translate_providers = ["lyricstranslate",
                                    "animesonglyrics",
-                                   "googletranslate",
+                                   "googletranslate"
                                    ]
 
         audio_providers_classes: List[Type[AudioProvider]] = []
@@ -350,7 +349,7 @@ class Downloader:
         """
 
         for lyrics_provider in self.lyrics_providers:
-            lyrics = lyrics_provider.get_lyrics(song.name, song.artists)
+            lyrics = lyrics_provider.get_lyrics(song.search_name, song.artists)
             if lyrics:
                 self.progress_handler.debug(
                     f"Found lyrics for {song.display_name} on {lyrics_provider.name}"
@@ -368,7 +367,7 @@ class Downloader:
         for translate_provider in self.translate_providers:
 
             if type(translate_provider) not in (Googletranslate,):
-                translator = translate_provider.get_translate(song.name, song.artists)
+                translator = translate_provider.get_translate(song.search_name, song.artists)
                 if translator[1]:
                     trans = translator[0]
                 else:

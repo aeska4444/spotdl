@@ -66,9 +66,9 @@ class YouTubeMusic(AudioProvider):
                             # print(f"# RETURN URL - {isrc_link} - isrc score")
                             return isrc_link
 
-                # print(f"# no match found for isrc {song.name} - {song.isrc}")
+                # print(f"# no match found for isrc {song.search_name} - {song.isrc}")
 
-            search_query = create_song_title(song.name, song.artists).lower()
+            search_query = create_song_title(song.search_name, song.artists).lower()
 
         # Query YTM by songs only first, this way if we get correct result on the first try
         # we don't have to make another request
@@ -181,20 +181,20 @@ class YouTubeMusic(AudioProvider):
         """
 
         # Slugify some variables
-        slug_song_name = slugify(song.name)
+        slug_song_name = slugify(song.search_name)
         sentence_words = slug_song_name.split("-")
         slug_song_album_name = slugify(song.album_name)
         slug_song_main_artist = slugify(song.artist)
         slug_song_artists = slugify(", ".join(song.artists))
         slug_song_title = slugify(
-            create_song_title(song.name, song.artists)
+            create_song_title(song.search_name, song.artists)
             if not self.search_query
             else create_search_query(song, self.search_query, False, None, True)
         )
 
         # DEBUG CODE
         # print("#############################")
-        # print(f"song.name: {song.name}")
+        # print(f"song.search_name: {song.search_name}")
         # print(f"song.album_name: {song.album_name}")
         # print(f"song.artist: {song.artist}")
         # print(f"song.artists: {song.artists}")
