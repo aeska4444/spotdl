@@ -641,7 +641,7 @@ class Downloader:
         return await asyncio.gather(*(task for task in tasks))
 
 
-a = Downloader()
+# a = Downloader()
 
 # t = a.translation(
 #     song=Song(album_artist='', name="Peace Sign",
@@ -659,10 +659,10 @@ a = Downloader()
 #               explicit=False, genres=['None'], isrc=None, publisher='None',
 #               song_id='None', track_number=0, tracks_count=0, url='None', year=0))
 #
-s = a.search(
-    song=Song(album_artist='', name="Peace Sign",
-              album_name='', artist='Kenshi Younezu',
-              artists=[], copyright_text=None, cover_url=None, date='', disc_count=0,
-              disc_number=0, duration=240,
-              explicit=False, genres=['None'], isrc=None, publisher='None',
-              song_id='None', track_number=0, tracks_count=0, url='None', year=0))
+# s = a.search(
+#     song=Song(album_artist='', name="Peace Sign",
+#               album_name='', artist='Kenshi Younezu',
+#               artists=[], copyright_text=None, cover_url=None, date='', disc_count=0,
+#               disc_number=0, duration=240,
+#               explicit=False, genres=['None'], isrc=None, publisher='None',
+#               song_id='None', track_number=0, tracks_count=0, url='None', year=0))

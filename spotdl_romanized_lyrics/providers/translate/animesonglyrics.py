@@ -50,7 +50,7 @@ class Animesonglyrics(TranslateProvider):
             translit, flag = (romaji.get_text('\n'), True,) if romaji else (None, False,)
 
             eng = englishlyrics.get_text('\n')
-            text = '\n'.join(filter(str.strip, translit + '\n' + eng))
+            text = ' '.join(filter(str.strip, translit + '\n' + eng))
             return text, flag,
 
         except Exception:
@@ -59,5 +59,5 @@ class Animesonglyrics(TranslateProvider):
     def translate(self, lyrics: str, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
-# a = Animesonglyrics()
-# print(a.get_translate('LOST IN PARADISE', ['ALI', 'AKLO']))
+a = Animesonglyrics()
+print(a.get_translate('LOST IN PARADISE', ['ALI', 'AKLO']))

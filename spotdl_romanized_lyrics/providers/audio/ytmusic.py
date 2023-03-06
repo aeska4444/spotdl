@@ -93,7 +93,6 @@ class YouTubeMusic(AudioProvider):
 
             if best_score >= 80:
                 # print(f"# RETURN URL - {best_url} - score >= 80")
-                print(best_url)
                 return best_url
 
         # We didn't find the correct song on the first try so now we get video type results
