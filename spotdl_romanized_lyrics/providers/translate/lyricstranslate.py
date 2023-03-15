@@ -17,10 +17,9 @@ class Lyricstranslate(TranslateProvider):
         )
         return BeautifulSoup(response.text.replace("<br/>", "\n"), "html.parser")
 
-    def get_translate(self, name: str, artists: List[str], **kwargs) -> tuple[
-        Optional[str], Optional[bool]]:
+    def get_translate(self, name: str, artists: List[str], url=None, **kwargs) -> Optional[tuple]:
+
         url = "https://lyricstranslate.com"
-        flag = False
         try:
 
             artist_str = " ".join(
@@ -37,28 +36,24 @@ class Lyricstranslate(TranslateProvider):
                 search_response.text.replace("<br/>", "\n"), "html.parser"
             )
             song = soup.select_one('td.ltsearch-songtitle').a['href']
-
             block = self.souper(song).select_one('div.song-list.grid-item').select(
                 'span.song-list-translations-list-languages')
 
             eng = list(filter(lambda a: a.a.text == 'English', block))[0].a['href']
-            eng_containers = self.souper(eng).select("div.translate-node-text")
+            eng_containers = self.souper(eng).select_one('div.translate-node-text'). \
+                select('div.ltf.direction-ltr')
             eng = " ".join(con.get_text() for con in eng_containers)
 
+            translit = None
             if list(filter(lambda a: a.a.text == 'Transliteration', block)):
                 translit = list(filter(lambda a: a.a.text == 'Transliteration', block))[0].a['href']
-                translit_containers = self.souper(translit).select("div.translate-node-text")
+                # translit_containers = self.souper(translit).select("div#song-body")
+                translit_containers = self.souper(translit). \
+                    select_one('div.translate-node-text').select('div.ltf.direction-ltr')
                 translit = " ".join(con.get_text() for con in translit_containers)
-            else:
-                translit, flag = None, True
-
-            text = '\n'.join(filter(str.strip, translit + '\n' + eng))
-            return text, flag
+            # print(translit, eng)
+            return translit, eng
         except Exception:
             return None, None
 
-    def translate(self, lyrics: str, **kwargs) -> Optional[str]:
-        raise NotImplementedError
-
-# a = Lyricstranslate()
-# print(a.get_translate('SantaMaria', ['Kenshi Yonezu']))
+# Lyricstranslate().get_translate('カワキヲアメク', ['美波'])

@@ -16,8 +16,8 @@ class Animesonglyrics(TranslateProvider):
         )
         return BeautifulSoup(response.text.replace("<br/>", "\n"), "html.parser")
 
-    def get_translate(self, name: str, artists: List[str], **kwargs) -> tuple[
-        Optional[str], Optional[bool]]:
+    def get_translate(self, name: str, artists: List[str], url=None, **kwargs) -> Optional[tuple]:
+
         url = "https://www.animesonglyrics.com"
         try:
 
@@ -47,17 +47,13 @@ class Animesonglyrics(TranslateProvider):
             englishlyrics = soup.select_one('div.englishlyrics')
             romaji = soup.select_one('div.romajilyrics')
 
-            translit, flag = (romaji.get_text('\n'), True,) if romaji else (None, False,)
-
+            translit = romaji.get_text('\n') if romaji else None
             eng = englishlyrics.get_text('\n')
-            text = ' '.join(filter(str.strip, translit + '\n' + eng))
-            return text, flag,
+            # print(translit, eng)
+            return translit, eng
 
         except Exception:
             return None, None
 
-    def translate(self, lyrics: str, **kwargs) -> Optional[str]:
-        raise NotImplementedError
 
-a = Animesonglyrics()
-print(a.get_translate('LOST IN PARADISE', ['ALI', 'AKLO']))
+# Animesonglyrics().get_translate('カワキヲアメク', ['美波'])

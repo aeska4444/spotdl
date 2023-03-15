@@ -10,7 +10,7 @@ class TranslateProvider:
     Base class for all other lyrics providers.
     """
 
-    def get_translate(self, name: str, artists: List[str], **kwargs) -> Optional[str]:
+    def get_translate(self, name: str, artists: List[str], url: str,  **kwargs) -> Optional[tuple]:
         """
         Returns the lyrics for the given song.
 
@@ -23,9 +23,6 @@ class TranslateProvider:
         - The lyrics of the song or None if no lyrics were found.
         """
 
-        raise NotImplementedError
-
-    def translate(self, lyrics: str, **kwargs) -> Optional[str]:
         raise NotImplementedError
 
     @property

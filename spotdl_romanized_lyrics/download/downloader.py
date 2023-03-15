@@ -1,7 +1,7 @@
 """
 Downloader module, this is where all the downloading pre/post processing happens etc.
 """
-
+import re
 import json
 import datetime
 import asyncio
@@ -30,7 +30,7 @@ from spotdl_romanized_lyrics.utils.search import reinit_song
 
 from spotdl_romanized_lyrics.providers.translate.base import TranslateProvider
 from spotdl_romanized_lyrics.providers.translate import Lyricstranslate, Animesonglyrics, \
-    Googletranslate
+    Googletranslate, YoutubeSbs
 
 AUDIO_PROVIDERS: Dict[str, Type[AudioProvider]] = {
     "youtube": YouTube,
@@ -47,7 +47,15 @@ TRANSLATE_PROVIDERS: Dict[str, Type[TranslateProvider]] = {
     "lyricstranslate": Lyricstranslate,
     "animesonglyrics": Animesonglyrics,
     "googletranslate": Googletranslate,
+    "youtube_subs": YoutubeSbs
 }
+
+# "translate_providers": [
+# "lyricstranslate",
+# 	"animesonglyrics",
+# 	"googletranslate",
+# 	"youtube_subs"
+# ],
 
 SPONSOR_BLOCK_CATEGORIES = {
     "sponsor": "Sponsor",
@@ -141,6 +149,7 @@ class Downloader:
         if translate_providers is None:
             translate_providers = ["lyricstranslate",
                                    "animesonglyrics",
+                                   "youtube_subs",
                                    "googletranslate"
                                    ]
 
@@ -363,18 +372,29 @@ class Downloader:
 
         return None
 
-    def translation(self, song: Song) -> Optional[str]:
+    def trans(self, song: Song) -> Optional[str]:
+
         for translate_provider in self.translate_providers:
 
             if type(translate_provider) not in (Googletranslate,):
-                translator = translate_provider.get_translate(song.search_name, song.artists)
+                translator = translate_provider.get_translate(
+                    song.search_name, song.artists, song.download_url)
                 if translator[1]:
-                    trans = translator[0]
+                    if translator[0]:
+                        trans = f"{str(translate_provider.name)}" \
+                                f"\n\n{translator[0]}" \
+                                f"\n\n{translator[1]}"
+                    else:
+                        trans = f"{str(translate_provider.name)}" \
+                                f"\n\n{Googletranslate.romanji(self.search_lyrics(song))}" \
+                                f"\n\n{translator[1]}"
                 else:
-                    trans = Googletranslate.romanji(self.translation(song)) + "\n" + translator[0]
+                    continue
             else:
-                trans = translate_provider.translate(self.search_lyrics(song))
-                # print(f'{trans=}')
+                lyrics = self.search_lyrics(song)
+                trans = f"{str(translate_provider.name)}" \
+                        f"\n\n{Googletranslate.romanji(lyrics)}" \
+                        f"\n\n{Googletranslate.translate(lyrics)}"
 
             if trans:
                 self.progress_handler.debug(
@@ -388,6 +408,14 @@ class Downloader:
             )
 
         return None
+
+    def lyrics_prep(self, lyrisc: str) -> Optional[str]:
+        patt = re.compile(r'(\s){2}?(\s)+')
+        out = re.sub(r'(\[.*\])', '', lyrisc)
+        out = re.sub(r'(<\/?.>)', '', out)
+        out = re.sub(r'\xa0', '\n', out)
+        out = re.sub(patt, r'\2', out)
+        return out
 
     def search_and_download(self, song: Song) -> Tuple[Song, Optional[Path]]:
         """
@@ -409,20 +437,6 @@ class Downloader:
         # And reinitialize the song object
         if song.name is None and song.url:
             song = reinit_song(song, self.playlist_numbering)
-
-        # Find song lyrics and add them to the song object
-        if self.add_translation:
-            lyrics = self.translation(song)
-        else:
-            lyrics = self.search_lyrics(song)
-        if lyrics is None:
-            self.progress_handler.debug(
-                f"No lyrics found for {song.display_name}, "
-                "lyrics providers: "
-                f"{', '.join([lprovider.name for lprovider in self.lyrics_providers])}"
-            )
-        else:
-            song.lyrics = lyrics
 
         # Initalize the progress tracker
         display_progress_tracker = self.progress_handler.get_new_tracker(song)
@@ -473,6 +487,24 @@ class Downloader:
                     search_query=self.search_query,
                     filter_results=self.filter_results,
                 )
+
+            # Set the song's download url
+            if song.download_url is None:
+                song.download_url = download_url
+
+            # Find song lyrics and add them to the song object
+            if self.add_translation:
+                lyrics = self.trans(song)
+            else:
+                lyrics = self.search_lyrics(song)
+            if lyrics is None:
+                self.progress_handler.debug(
+                    f"No lyrics found for {song.display_name}, "
+                    "lyrics providers: "
+                    f"{', '.join([lprovider.name for lprovider in self.lyrics_providers])}"
+                )
+            else:
+                song.lyrics = self.lyrics_prep(lyrics)
 
             self.progress_handler.debug(
                 f"Downloading {song.display_name} using {download_url}, "
@@ -564,10 +596,6 @@ class Downloader:
 
             download_info["filepath"] = str(output_file)
 
-            # Set the song's download url
-            if song.download_url is None:
-                song.download_url = download_url
-
             display_progress_tracker.notify_conversion_complete()
 
             # SponsorBlock post processor
@@ -639,7 +667,6 @@ class Downloader:
         """
 
         return await asyncio.gather(*(task for task in tasks))
-
 
 # a = Downloader()
 
