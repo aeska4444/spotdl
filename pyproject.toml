@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "spotdl_romanized_lyrics"
+name = "spotdl_rl"
 version = "0.0.6"
 description = "Download your Spotify playlists and songs along with album art and metadata"
 license = "MIT"
@@ -75,7 +75,7 @@ mkdocs-literate-nav = "^0.6.0"
 mkdocs-section-index = "^0.3.5"
 
 [tool.poetry.scripts]
-spotdl_romanized_lyrics = "spotdl_romanized_lyrics:console_entry_point"
+spotdl_rl = "spotdl_rl:console_entry_point"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
