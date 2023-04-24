@@ -314,7 +314,7 @@ class TextWrapper:
                     if not lines:
                         cur_line = [self.initial_indent] + cur_line
                         width -= len(self.initial_indent)
-                        width -= cur_len
+                    width -= cur_len
 
                     if self.alignment == 'l':
                         lines.append(''.join(cur_line) + indent * width)
