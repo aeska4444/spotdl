@@ -314,15 +314,15 @@ class TextWrapper:
                     if not lines:
                         cur_line = [self.initial_indent] + cur_line
                         width -= len(self.initial_indent)
-                    t = width - cur_len
+                        width -= cur_len
 
                     if self.alignment == 'l':
-                        lines.append(''.join(cur_line) + indent * t)
+                        lines.append(''.join(cur_line) + indent * width)
                     elif self.alignment == 'r':
-                        # print(t)
-                        lines.append(indent * t + ''.join(cur_line))
+                        lines.append(indent * width + ''.join(cur_line))
                     elif self.alignment == 'c':
-                        lines.append(indent * (t // 2) + ''.join(cur_line) + indent * sum(divmod(t,2)))
+                        lines.append(indent * (width // 2) + ''.join(cur_line)
+                                     + indent * sum(divmod(width, 2)))
 
                 else:
                     while cur_line:
