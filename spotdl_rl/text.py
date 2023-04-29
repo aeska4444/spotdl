@@ -278,7 +278,8 @@ class TextWrapper:
             indent = self.subsequent_indent
 
             # Maximum width for this line.
-            width = self.width - len(indent)
+            m = 2 if self.alignment =='c' else 1
+            width = self.width - len(indent) * m
 
             # First chunk on line is whitespace -- drop it, unless this
             # is the very beginning of the text (ie. no lines started yet).
@@ -324,13 +325,14 @@ class TextWrapper:
                         width -= len(self.initial_indent)
                     t = width - cur_len
 
-                    if self.alignment == 'l':
-                        lines.append(''.join(cur_line) + indent * t)
-                    elif self.alignment == 'r':
-                        # print(t)
-                        lines.append(indent * t + ''.join(cur_line))
+                    if self.alignment == 'r':
+                        lines.append(' ' * t + ''.join(cur_line) + indent)
+                
+                    elif self.alignment == 'l':
+
+                        lines.append(indent  + ''.join(cur_line))
                     elif self.alignment == 'c':
-                        lines.append(indent * (t // 2) + ''.join(cur_line) + indent * sum(divmod(t, 2)))
+                        lines.append(indent + ' '*(t // 2) + ''.join(cur_line) + ' '*sum(divmod(t, 2)) + indent)
 
                 else:
                     while cur_line:
